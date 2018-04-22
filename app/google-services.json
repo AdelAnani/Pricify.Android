@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1060545273076",
+    "firebase_url": "https://alert-658e9.firebaseio.com",
+    "project_id": "alert-658e9",
+    "storage_bucket": "alert-658e9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060545273076:android:555fe83095362b1b",
+        "android_client_info": {
+          "package_name": "co.pricify.android.pricify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1060545273076-rsc44p18e9iq8gf26cnlh6kehg2nuhjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW6etKdtRU54Ssyw3Rxv5Fyqn168yo20Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
