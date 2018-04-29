@@ -3,6 +3,7 @@ package co.pricify.android.pricify;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import co.pricify.android.pricify.fragments.AboutFragment;
+import co.pricify.android.pricify.fragments.AddProductFragment;
+import co.pricify.android.pricify.fragments.HelpFragment;
+import co.pricify.android.pricify.fragments.MyProductsFragment;
+import co.pricify.android.pricify.fragments.SettingsFragment;
+import co.pricify.android.pricify.fragments.TrendingsFragment;
+
 public class ProfilActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -22,15 +30,8 @@ public class ProfilActivity extends AppCompatActivity
         setContentView(R.layout.activity_profil);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Pricify");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -54,19 +55,14 @@ public class ProfilActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.profil, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -77,20 +73,43 @@ public class ProfilActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_addProduct) {
 
-        } else if (id == R.id.nav_slideshow) {
+            AddProductFragment addProductFragment = new AddProductFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.profil_layout, addProductFragment, addProductFragment.getTag()).commit();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_myProducts) {
 
-        } else if (id == R.id.nav_share) {
+            MyProductsFragment myProductsFragment = new MyProductsFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.profil_layout, myProductsFragment, myProductsFragment.getTag()).commit();
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_trending) {
+
+            TrendingsFragment trendingsFragment = new TrendingsFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.profil_layout, trendingsFragment, trendingsFragment.getTag()).commit();
+
+        } else if (id == R.id.nav_settings) {
+
+            SettingsFragment settingsFragment = new SettingsFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.profil_layout, settingsFragment, settingsFragment.getTag()).commit();
+
+        }else if (id == R.id.nav_help) {
+
+        HelpFragment helpFragment = new HelpFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.profil_layout, helpFragment, helpFragment.getTag()).commit();
+
+        }else if (id == R.id.nav_about) {
+
+            AboutFragment aboutFragment = new AboutFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.profil_layout, aboutFragment, aboutFragment.getTag()).commit();
 
         }
 

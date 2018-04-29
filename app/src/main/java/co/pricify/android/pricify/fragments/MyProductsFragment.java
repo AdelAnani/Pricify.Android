@@ -1,109 +1,94 @@
 package co.pricify.android.pricify.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v7.widget.GridLayoutManager;
+import android.widget.AdapterView;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.math.BigDecimal;
 
 import co.pricify.android.pricify.R;
+import co.pricify.android.pricify.adapters.ProductsAdapter;
+import co.pricify.android.pricify.models.Product;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MyProductsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MyProductsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MyProductsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    public MyProductsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyProductsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyProductsFragment newInstance(String param1, String param2) {
-        MyProductsFragment fragment = new MyProductsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private RecyclerView productsRecyclerView;
+    private ProductsAdapter productsAdapter;
+    private List<Product> productList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_products, container, false);
+
+        this.getActivity().setTitle("My Products");
+
+        View view = inflater.inflate(R.layout.fragment_my_products, container, false);
+
+        productsRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_myProducts);
+        productList = new ArrayList<>();
+        productsAdapter = new ProductsAdapter(this.getContext(), productList);
+
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getContext(), 1);
+        productsRecyclerView.setLayoutManager(mLayoutManager);
+        //productsRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        //productsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        productsRecyclerView.setAdapter(productsAdapter);
+        getProducts();
+
+        return  view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+    private void getProducts() {
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+        BigDecimal currentPrice01 = new BigDecimal("123.99");
+        BigDecimal currentPrice02 = new BigDecimal("223.99");
+        BigDecimal currentPrice03 = new BigDecimal("433.99");
+        BigDecimal currentPrice04 = new BigDecimal("13.99");
+        BigDecimal currentPrice05 = new BigDecimal("23.99");
+        BigDecimal currentPrice06 = new BigDecimal("201.99");
+        BigDecimal highestPrice01 = new BigDecimal("123.02");
+        BigDecimal highestPrice02 = new BigDecimal("123.02");
+        BigDecimal highestPrice03 = new BigDecimal("123.02");
+        BigDecimal highestPrice04 = new BigDecimal("123.02");
+        BigDecimal highestPrice05 = new BigDecimal("123.02");
+        BigDecimal highestPrice06 = new BigDecimal("123.02");
+        BigDecimal lowestPrice01 = new BigDecimal("123.02");
+        BigDecimal lowestPrice02 = new BigDecimal("123.02");
+        BigDecimal lowestPrice03 = new BigDecimal("123.02");
+        BigDecimal lowestPrice04 = new BigDecimal("123.02");
+        BigDecimal lowestPrice05 = new BigDecimal("123.02");
+        BigDecimal lowestPrice06 = new BigDecimal("123.02");
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        Product product01 = new Product("Beats By Dre", currentPrice01, highestPrice01, lowestPrice01, "www.amazon.ca");
+        productList.add(product01);
+
+        Product product02 = new Product("Nike Cap", currentPrice02, highestPrice02, lowestPrice02, "www.nike.ca");
+        productList.add(product02);
+
+        Product product03 = new Product("Iphone 6", currentPrice03, highestPrice03, lowestPrice03, "www.apple.ca");
+        productList.add(product03);
+
+        Product product04 = new Product("Banana", currentPrice04, highestPrice04, lowestPrice04, "www.banana.ca");
+        productList.add(product04);
+
+        Product product05 = new Product("Sunglasses", currentPrice05, highestPrice05, lowestPrice05, "www.zara.ca");
+        productList.add(product05);
+
+        Product product06 = new Product("7R", currentPrice06, highestPrice06, lowestPrice06, "www.7r.ca");
+        productList.add(product06);
+
+        productsAdapter.notifyDataSetChanged();
     }
 }
