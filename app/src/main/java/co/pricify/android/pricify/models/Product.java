@@ -1,6 +1,7 @@
 package co.pricify.android.pricify.models;
 
 import java.math.BigDecimal;
+import java.net.URL;
 
 public class Product {
     private String name;
@@ -8,13 +9,15 @@ public class Product {
     private BigDecimal highestPrice;
     private BigDecimal lowestPrice;
     private String companyUrl;
+    private String imageUrl;
 
-    public Product(String name, BigDecimal currentPrice, BigDecimal highestPrice, BigDecimal lowestPrice, String companyUrl) {
+    public Product(String name, BigDecimal currentPrice, BigDecimal highestPrice, BigDecimal lowestPrice, String companyUrl, String imageUrl) {
         this.name = name;
         this.currentPrice = currentPrice;
         this.highestPrice = highestPrice;
         this.lowestPrice = lowestPrice;
         this.companyUrl = companyUrl;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() { return name; }
@@ -43,4 +46,11 @@ public class Product {
         this.companyUrl = companyUrl;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

@@ -67,7 +67,7 @@ public class TrendingsFragment extends Fragment {
         BigDecimal lowestPrice06 = new BigDecimal("123.02");
 
 
-        Product product01 = new Product("Beats By Dre", currentPrice01, highestPrice01, lowestPrice01, "www.amazon.ca");
+        /*Product product01 = new Product("Beats By Dre", currentPrice01, highestPrice01, lowestPrice01, "www.amazon.ca");
         productList.add(product01);
 
         Product product02 = new Product("Nike Cap", currentPrice02, highestPrice02, lowestPrice02, "www.nike.ca");
@@ -83,7 +83,7 @@ public class TrendingsFragment extends Fragment {
         productList.add(product05);
 
         Product product06 = new Product("7R", currentPrice06, highestPrice06, lowestPrice06, "www.7r.ca");
-        productList.add(product06);
+        productList.add(product06);*/
 
         productsAdapter.notifyDataSetChanged();
     }

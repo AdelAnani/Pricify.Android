@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Bundle;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import co.pricify.android.pricify.RegisterActivity;
@@ -38,7 +40,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         public MyViewHolder(View view) {
             super(view);
 
-            //picture = (ImageView) view.findViewById(R.id.product_card_Picture);
+            picture = (ImageView) view.findViewById(R.id.product_card_Picture);
             productName = (TextView) view.findViewById(R.id.product_card_productName);
             productUrlCompany = (TextView) view.findViewById(R.id.product_card_productUrlCompany);
             productPrice = (TextView) view.findViewById(R.id.product_card_productPrice);
@@ -66,6 +68,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         holder.productName.setText("Product : " + product.getName());
         holder.productUrlCompany.setText("Company : " + product.getCompanyUrl());
         holder.productPrice.setText("Current price : " + (product.getCurrentPrice()).toString());
+        Picasso.get().load(product.getImageUrl()).into(holder.picture);
 
         //Glide.with(mContext).load(product.getPicture()).into(holder.picture);
 
@@ -83,6 +86,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
         bundle.putString("productCurrentPrice", product.getCurrentPrice().toString());
         bundle.putString("productHighestPrice", product.getHighestPrice().toString());
         bundle.putString("productLowestPrice", product.getLowestPrice().toString());
+        bundle.putString("productImageUrl", product.getImageUrl().toString());
 
         holder.productLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
