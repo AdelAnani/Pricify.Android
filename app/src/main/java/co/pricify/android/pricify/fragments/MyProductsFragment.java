@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.GridLayoutManager;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -109,6 +110,8 @@ public class MyProductsFragment extends Fragment {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Toast.makeText(MyProductsFragment.this.getContext(), "Successful product list request", Toast.LENGTH_SHORT).show();
+
                         // do anything with response
                         System.out.println("response");
                         try {

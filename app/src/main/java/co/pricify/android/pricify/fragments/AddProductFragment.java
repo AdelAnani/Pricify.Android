@@ -12,6 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import co.pricify.android.pricify.AuthentificationActivity;
 import co.pricify.android.pricify.R;
 import co.pricify.android.pricify.RegisterActivity;
@@ -33,8 +43,41 @@ public class AddProductFragment extends Fragment {
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddProductFragment.this.getContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
+
                 inputProductPageURL.setText("");
+                buttonAddProduct.setEnabled(false);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("email", "nicolas.parigi@epitech.eu");
+                    jsonObject.put("url", inputProductPageURL.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                AndroidNetworking.post("http://pricify.co/items")
+                        .addQueryParameter("email", "nicolas.parigi@epitech.eu")
+                        .addJSONObjectBody(jsonObject) // posting json
+                        .setPriority(Priority.MEDIUM)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // do anything with response
+                                Toast.makeText(AddProductFragment.this.getContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
+                                buttonAddProduct.setEnabled(true);
+                            }
+                            @Override
+                            public void onError(ANError error) {
+                                // handle error
+                                Toast.makeText(AddProductFragment.this.getContext(), "Error: Product not added", Toast.LENGTH_SHORT).show();
+                                buttonAddProduct.setEnabled(true);
+                                System.out.println("error");
+                                System.out.println(error);
+                            }
+                        });
+
+
+
             }
         });
         return  view;
