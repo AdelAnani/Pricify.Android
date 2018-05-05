@@ -1,11 +1,14 @@
 package co.pricify.android.pricify;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +25,10 @@ import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -59,8 +66,8 @@ public class ProfilActivity extends AppCompatActivity
         user = User.getInstance();
         userEmail = user.userEmail;
 
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+        //storage = FirebaseStorage.getInstance();
+        //storageReference = storage.getReference();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -70,6 +77,7 @@ public class ProfilActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -85,6 +93,23 @@ public class ProfilActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profil, menu);
+
+
+        ImageView myImage = (ImageView)findViewById(R.id.ProfileImage);
+
+        File directory = getApplicationContext().getCacheDir();
+        // Create imageDir
+        Log.d("Directory= ",directory.getAbsolutePath());
+        File mypath=new File(directory,"profile.jpg");
+
+        File imgFile = mypath;
+
+        if(imgFile.exists()){
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            myImage.setImageBitmap(myBitmap);
+
+        }
         return true;
     }
 
@@ -158,9 +183,35 @@ public class ProfilActivity extends AppCompatActivity
                     userProfilPic = encodeTobase64(thumbnail);
 
                     profilPic.setImageBitmap(thumbnail);
+                    saveToInternalStorage(thumbnail);
 
                 }
         }
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        //String path = cw.getCacheDir().getAbsolutePath();
+        File directory = cw.getCacheDir();
+        // Create imageDir
+        File mypath=new File(directory,"profile.jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
     }
 
 
