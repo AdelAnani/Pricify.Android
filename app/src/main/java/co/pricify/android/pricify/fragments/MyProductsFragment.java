@@ -1,23 +1,20 @@
 package co.pricify.android.pricify.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.GridLayoutManager;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
 import org.json.JSONArray;
@@ -43,6 +40,9 @@ public class MyProductsFragment extends Fragment {
     private List<Product> productList;
     private String userEmail;
 
+    private SwipeRefreshLayout refreshLayout;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,6 +57,16 @@ public class MyProductsFragment extends Fragment {
         userEmail = user.userEmail;
 
         productsRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_myProducts);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+
+        refreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getProducts();
+            }
+        });
+
         productList = new ArrayList<>();
         productsAdapter = new ProductsAdapter(this.getContext(), productList);
 
@@ -69,8 +79,7 @@ public class MyProductsFragment extends Fragment {
     }
 
     private void getProducts() {
-
-        System.out.println("call");
+        Toast.makeText(MyProductsFragment.this.getContext(), "Updating...", Toast.LENGTH_SHORT).show();
 
         AndroidNetworking.get("http://pricify.co/items")
                 .addQueryParameter("email", userEmail)
@@ -79,10 +88,7 @@ public class MyProductsFragment extends Fragment {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        //Toast.makeText(MyProductsFragment.this.getContext(), "Successful product list request", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MyProductsFragment.this.getContext(), "useremail = " + userEmail, Toast.LENGTH_SHORT).show();
-
-                        // do anything with response
+                        productList.clear();
                         System.out.println("response");
                         try {
                             JSONArray itemsArray = response.getJSONArray("items");
@@ -97,20 +103,23 @@ public class MyProductsFragment extends Fragment {
                             }
                             productsAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
-                            e.printStackTrace();                        } catch (URISyntaxException e) {
                             e.printStackTrace();
+                            Toast.makeText(MyProductsFragment.this.getContext(), "Erreur lors de l'actualisation pour l'utilisateur" + userEmail, Toast.LENGTH_SHORT).show();
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            Toast.makeText(MyProductsFragment.this.getContext(), "Erreur lors de l'actualisation pour l'utilisateur" + userEmail, Toast.LENGTH_SHORT).show();
                         }
+                        refreshLayout.setRefreshing(false);
+                        Toast.makeText(MyProductsFragment.this.getContext(), "Update completed for user " + userEmail, Toast.LENGTH_SHORT).show();
 
-                        System.out.println(response);
+                        return;
                     }
                     @Override
                     public void onError(ANError error) {
-                        System.out.println("error");
+                        Toast.makeText(MyProductsFragment.this.getContext(), "Erreur lors de l'actualisation pour l'utilisateur" + userEmail, Toast.LENGTH_SHORT).show();
+                        refreshLayout.setRefreshing(false);
                         System.out.println(error);
                     }
                 });
-
-
-        productsAdapter.notifyDataSetChanged();
     }
 }

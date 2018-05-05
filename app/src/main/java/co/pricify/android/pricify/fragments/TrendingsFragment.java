@@ -1,7 +1,5 @@
 package co.pricify.android.pricify.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -57,6 +55,7 @@ public class TrendingsFragment extends Fragment {
 
     private void getTrendingsProducts() {
 
+        Toast.makeText(TrendingsFragment.this.getContext(), "Updating...", Toast.LENGTH_SHORT).show();
 
         AndroidNetworking.get("http://pricify.co/bot/trending")
                 .setPriority(Priority.LOW)
@@ -78,10 +77,15 @@ public class TrendingsFragment extends Fragment {
                             }
                             productsAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
-                            e.printStackTrace();                        } catch (URISyntaxException e) {
                             e.printStackTrace();
-                        }
+                            Toast.makeText(TrendingsFragment.this.getContext(), "Erreur lors de l'actualisation pour l'utilisateur", Toast.LENGTH_SHORT).show();
 
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            Toast.makeText(TrendingsFragment.this.getContext(), "Erreur lors de l'actualisation pour l'utilisateur", Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(TrendingsFragment.this.getContext(), "Update completed for user ", Toast.LENGTH_SHORT).show();
+                        productsAdapter.notifyDataSetChanged();
                         System.out.println(response);
                     }
                     @Override

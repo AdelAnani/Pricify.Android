@@ -1,8 +1,6 @@
 package co.pricify.android.pricify.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,16 +13,12 @@ import android.widget.Toast;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import co.pricify.android.pricify.AuthentificationActivity;
 import co.pricify.android.pricify.R;
-import co.pricify.android.pricify.RegisterActivity;
 import co.pricify.android.pricify.models.User;
 
 
@@ -32,6 +26,9 @@ public class AddProductFragment extends Fragment {
     private EditText inputProductPageURL;
     private Button buttonAddProduct;
     private String userEmail;
+    ProgressDialog progressDialog;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +47,8 @@ public class AddProductFragment extends Fragment {
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(AddProductFragment.this.getContext(), "Ajout du produit..." + userEmail, Toast.LENGTH_SHORT).show();
+                progressDialog = ProgressDialog.show(getActivity(),"","Ajout du produit...",false);
 
                 //inputProductPageURL.setText("");
                 buttonAddProduct.setEnabled(false);
@@ -70,8 +69,11 @@ public class AddProductFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject response) {
                                 // do anything with response
-                                Toast.makeText(AddProductFragment.this.getContext(), "Product added successfully", Toast.LENGTH_SHORT).show();
+                                inputProductPageURL.setText("");
+                                Toast.makeText(AddProductFragment.this.getContext(), "Produit ajouté !", Toast.LENGTH_SHORT).show();
                                 buttonAddProduct.setEnabled(true);
+                                progressDialog.dismiss();
+
                             }
                             @Override
                             public void onError(ANError error) {
@@ -80,6 +82,7 @@ public class AddProductFragment extends Fragment {
                                 buttonAddProduct.setEnabled(true);
                                 System.out.println("error");
                                 System.out.println(error);
+                                progressDialog.dismiss();
                             }
                         });
 

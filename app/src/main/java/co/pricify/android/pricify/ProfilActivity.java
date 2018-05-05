@@ -35,8 +35,6 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONObject;
 
@@ -51,8 +49,6 @@ public class ProfilActivity extends AppCompatActivity
 
     private String userProfilPic;
     private String userEmail;
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +156,12 @@ public class ProfilActivity extends AppCompatActivity
             Context profilContext = (Context) ProfilActivity.this;
             Intent intent = new Intent(profilContext, AuthentificationActivity.class);
             profilContext.startActivity(intent);
+        } else {
+            TrendingsFragment trendingsFragment = new TrendingsFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.profil_layout, trendingsFragment, trendingsFragment.getTag()).commit();
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
