@@ -1,13 +1,11 @@
 package co.pricify.android.pricify;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,16 +16,36 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.app.ProgressDialog;
+import android.util.Base64;
+import android.widget.Toast;
 
-import co.pricify.android.pricify.fragments.AboutFragment;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import org.json.JSONObject;
+
 import co.pricify.android.pricify.fragments.AddProductFragment;
-import co.pricify.android.pricify.fragments.HelpFragment;
 import co.pricify.android.pricify.fragments.MyProductsFragment;
 import co.pricify.android.pricify.fragments.SettingsFragment;
 import co.pricify.android.pricify.fragments.TrendingsFragment;
+import co.pricify.android.pricify.models.User;
 
 public class ProfilActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private String userProfilPic;
+    private String userEmail;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +55,12 @@ public class ProfilActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setTitle("Pricify");
 
+        User user;
+        user = User.getInstance();
+        userEmail = user.userEmail;
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -81,41 +105,36 @@ public class ProfilActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_addProduct) {
-
             AddProductFragment addProductFragment = new AddProductFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("userEmail", userEmail);
+            addProductFragment.setArguments(bundle);
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.profil_layout, addProductFragment, addProductFragment.getTag()).commit();
 
         } else if (id == R.id.nav_myProducts) {
-
             MyProductsFragment myProductsFragment = new MyProductsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("userEmail", userEmail);
+            myProductsFragment.setArguments(bundle);
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.profil_layout, myProductsFragment, myProductsFragment.getTag()).commit();
 
         } else if (id == R.id.nav_trending) {
-
             TrendingsFragment trendingsFragment = new TrendingsFragment();
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.profil_layout, trendingsFragment, trendingsFragment.getTag()).commit();
 
         } else if (id == R.id.nav_settings) {
-
             SettingsFragment settingsFragment = new SettingsFragment();
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.profil_layout, settingsFragment, settingsFragment.getTag()).commit();
 
-        }else if (id == R.id.nav_help) {
-
-        HelpFragment helpFragment = new HelpFragment();
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.profil_layout, helpFragment, helpFragment.getTag()).commit();
-
-        }else if (id == R.id.nav_about) {
-
-            AboutFragment aboutFragment = new AboutFragment();
-            FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(R.id.profil_layout, aboutFragment, aboutFragment.getTag()).commit();
-
+        } else if (id == R.id.nav_signOut) {
+            FirebaseAuth.getInstance().signOut();
+            Context profilContext = (Context) ProfilActivity.this;
+            Intent intent = new Intent(profilContext, AuthentificationActivity.class);
+            profilContext.startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -136,8 +155,29 @@ public class ProfilActivity extends AppCompatActivity
                 if(resultCode==RESULT_OK){
                     ImageView profilPic = (ImageView) findViewById(R.id.ProfileImage);
                     Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                    userProfilPic = encodeTobase64(thumbnail);
+
                     profilPic.setImageBitmap(thumbnail);
+
                 }
         }
     }
+
+
+    public static String encodeTobase64(Bitmap image)
+    {
+        Bitmap immagex=image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+        return imageEncoded;
+    }
+
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
 }

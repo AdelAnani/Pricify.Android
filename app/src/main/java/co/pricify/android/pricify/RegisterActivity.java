@@ -11,10 +11,19 @@ import android.text.TextUtils;
 import android.support.annotation.NonNull;
 
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import co.pricify.android.pricify.fragments.AddProductFragment;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -49,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String username = inputUsername.getText().toString().trim();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
 
@@ -81,6 +91,38 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("username", username);
+                    jsonObject.put("email", email);
+                    jsonObject.put("emailNotification", "true");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                AndroidNetworking.post("https://www.pricify.co/users")
+                        .addJSONObjectBody(jsonObject) // posting json
+                        .setPriority(Priority.MEDIUM)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // do anything with response
+                                Toast.makeText(RegisterActivity.this, "User added successfully", Toast.LENGTH_SHORT).show();
+                                buttonSignUp.setEnabled(true);
+                            }
+                            @Override
+                            public void onError(ANError error) {
+                                // handle error
+                                Toast.makeText(RegisterActivity.this, "Error: User not added", Toast.LENGTH_SHORT).show();
+                                buttonSignUp.setEnabled(true);
+                                System.out.println("error");
+                                System.out.println(error);
+                            }
+                        });
+
+
             }
         });
     }

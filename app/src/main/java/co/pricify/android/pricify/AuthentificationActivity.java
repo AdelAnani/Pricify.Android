@@ -1,8 +1,11 @@
 package co.pricify.android.pricify;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+
+import co.pricify.android.pricify.models.User;
 
 public class AuthentificationActivity extends AppCompatActivity {
 
@@ -29,10 +34,13 @@ public class AuthentificationActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-//        if(auth.getCurrentUser() != null){
-//            finish();
-//            startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
-//        }
+        if(auth.getCurrentUser() != null){
+            finish();
+            User user;
+            user = User.getInstance();
+            user.userEmail = auth.getCurrentUser().getEmail();;
+            startActivity(new Intent(getApplicationContext(), ProfilActivity.class));
+        }
 
         inputEmail = (EditText) findViewById(R.id.editText_authentification_email);
         inputPassword = (EditText) findViewById(R.id.editText_authentification_password);
@@ -65,6 +73,9 @@ public class AuthentificationActivity extends AppCompatActivity {
                     return;
                 }
 
+//                final Bundle bundleUser = new Bundle();
+//                bundleUser.putString("userEmail", email);
+
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(AuthentificationActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -76,7 +87,16 @@ public class AuthentificationActivity extends AppCompatActivity {
                                     Toast.makeText(AuthentificationActivity.this, "Connexion succesful.",
                                             Toast.LENGTH_SHORT).show();
                                     finish();
-                                    startActivity(new Intent(AuthentificationActivity.this, ProfilActivity.class));
+
+                                    User user;
+                                    user = User.getInstance();
+                                    user.userEmail = auth.getCurrentUser().getEmail();
+
+                                    Context authContext = (Context) AuthentificationActivity.this;
+                                    Intent intent = new Intent(authContext, ProfilActivity.class);
+//                                    intent.putExtras(bundleUser);
+                                    authContext.startActivity(intent);
+                                    //startActivity(new Intent(AuthentificationActivity.this, ProfilActivity.class));
                                 }
                             }
                         });

@@ -60,6 +60,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textSize="15dp"
+                android:textStyle="bold"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toEndOf="@+id/product_card_Picture"
                 card_view:layout_constraintTop_toBottomOf="@+id/product_card_productName" />

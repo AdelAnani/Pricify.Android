@@ -65,27 +65,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Product product = productList.get(position);
-        holder.productName.setText("Product : " + product.getName());
-        holder.productUrlCompany.setText("Company : " + product.getCompanyUrl());
-        holder.productPrice.setText("Current price : " + (product.getCurrentPrice()).toString());
+        holder.productName.setText(product.getName().substring(0,15) + "...");
+        holder.productUrlCompany.setText("By " + product.getCompanyUrl());
+        holder.productPrice.setText((product.getCurrentPrice()).toString() + " $");
         Picasso.get().load(product.getImageUrl()).into(holder.picture);
-
-        //Glide.with(mContext).load(product.getPicture()).into(holder.picture);
-
-/*        holder.overflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(holder.overflow);
-            }
-        });*/
 
         final Bundle bundle = new Bundle();
 
         bundle.putString("productName", product.getName());
         bundle.putString("productCompanyUrl", product.getCompanyUrl());
         bundle.putString("productCurrentPrice", product.getCurrentPrice().toString());
-        bundle.putString("productHighestPrice", product.getHighestPrice().toString());
-        bundle.putString("productLowestPrice", product.getLowestPrice().toString());
         bundle.putString("productImageUrl", product.getImageUrl().toString());
 
         holder.productLinearLayout.setOnClickListener(new View.OnClickListener() {

@@ -25,15 +25,22 @@ import org.json.JSONObject;
 import co.pricify.android.pricify.AuthentificationActivity;
 import co.pricify.android.pricify.R;
 import co.pricify.android.pricify.RegisterActivity;
+import co.pricify.android.pricify.models.User;
 
 
 public class AddProductFragment extends Fragment {
     private EditText inputProductPageURL;
     private Button buttonAddProduct;
+    private String userEmail;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_product, container, false);
+
+        User user;
+        user = User.getInstance();
+        userEmail = user.userEmail;
 
         this.getActivity().setTitle("Add Product");
 
@@ -44,18 +51,18 @@ public class AddProductFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                inputProductPageURL.setText("");
+                //inputProductPageURL.setText("");
                 buttonAddProduct.setEnabled(false);
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("email", "nicolas.parigi@epitech.eu");
+                    jsonObject.put("email", userEmail);
                     jsonObject.put("url", inputProductPageURL.getText().toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                AndroidNetworking.post("http://pricify.co/items")
-                        .addQueryParameter("email", "nicolas.parigi@epitech.eu")
+                AndroidNetworking.post("https://www.pricify.co/bot/items")
+                        .addQueryParameter("email", userEmail)
                         .addJSONObjectBody(jsonObject) // posting json
                         .setPriority(Priority.MEDIUM)
                         .build()
